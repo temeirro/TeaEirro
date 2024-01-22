@@ -123,6 +123,7 @@ class AuthController extends Controller
             'image'=> 'required|string',
             'phone'=> 'required|string',
             'email'=> 'required|string',
+            'role'=> 'required|string',
             'password'=> 'required|string|min:6',
         ]);
 

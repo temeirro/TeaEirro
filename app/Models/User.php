@@ -25,6 +25,7 @@ class User extends Authenticatable implements JWTSubject
         'phone',
         'image',
         'lastName',
+        'role',
     ];
 
     /**
@@ -58,6 +59,7 @@ class User extends Authenticatable implements JWTSubject
             "email" => $this->email,
             "name" => $this->name,
             "lastName" => $this->lastName,
+            "role" => $this->role,
 
         ];
     }
