@@ -61,43 +61,47 @@
         "/api/register": {
             "post": {
                 "tags": [
-                    "Auth"
+                    "Authentication"
                 ],
+                "summary": "Register a new user",
                 "operationId": "8a56853624e025573120a09a4c75d468",
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "email",
-                                    "lastName",
                                     "name",
-                                    "phone",
+                                    "lastName",
                                     "image",
-                                    "password",
-                                    "password_confirmation"
+                                    "phone",
+                                    "email",
+                                    "role",
+                                    "password"
                                 ],
                                 "properties": {
-                                    "image": {
-                                        "type": "string"
-                                    },
-                                    "email": {
+                                    "name": {
                                         "type": "string"
                                     },
                                     "lastName": {
                                         "type": "string"
                                     },
-                                    "name": {
+                                    "image": {
                                         "type": "string"
                                     },
                                     "phone": {
                                         "type": "string"
                                     },
-                                    "password": {
+                                    "email": {
                                         "type": "string"
                                     },
-                                    "password_confirmation": {
+                                    "role": {
                                         "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 6
                                     }
                                 },
                                 "type": "object"
@@ -107,7 +111,154 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Add Category."
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "description": "Authentication token",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request, validation error"
+                    }
+                }
+            }
+        },
+        "/api/getAllTea": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "bd714854a25e516a1693fc680a5064f6",
+                "responses": {
+                    "200": {
+                        "description": "Tea List."
+                    }
+                }
+            }
+        },
+        "/api/getBlackTea": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "4852a35857053bad8215b0c21c0e7098",
+                "responses": {
+                    "200": {
+                        "description": "Black Tea List."
+                    }
+                }
+            }
+        },
+        "/api/getTea/{id}": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "2d35267bb798978448b78db18bfa1f8f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the tea",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tea by ID."
+                    },
+                    "404": {
+                        "description": "Tea not found."
+                    }
+                }
+            }
+        },
+        "/api/getGreenTea": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "60d6fab8edd7ce67c9fb8af19ea1533d",
+                "responses": {
+                    "200": {
+                        "description": "Green Tea List."
+                    }
+                }
+            }
+        },
+        "/api/getYellowTea": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "9f37750d40795c681d844f4209c9613e",
+                "responses": {
+                    "200": {
+                        "description": "Yellow Tea List."
+                    }
+                }
+            }
+        },
+        "/api/getOolongTea": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "01e413da04d4fa0ee11834a1b143c850",
+                "responses": {
+                    "200": {
+                        "description": "Oolong Tea List."
+                    }
+                }
+            }
+        },
+        "/api/getWhiteTea": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "cd9945f4a9df2dbda25c595f71addda6",
+                "responses": {
+                    "200": {
+                        "description": "White Tea List."
+                    }
+                }
+            }
+        },
+        "/api/getPuerhTea": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "a8515de2266d33988f16480fe14e14ad",
+                "responses": {
+                    "200": {
+                        "description": "Puerh Tea List."
+                    }
+                }
+            }
+        },
+        "/api/getMatchaTea": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "90f5d325af54bf4e819b005806956898",
+                "responses": {
+                    "200": {
+                        "description": "Matcha Tea List."
                     }
                 }
             }

@@ -5,20 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TeaImage extends Model
+class TeaOrigin extends Model
 {
-    protected $table = 'tea_images';
+    protected $table = 'tea_origins';
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'tea_id',
+        "name",
     ];
-
-    public function tea()
-    {
-        return $this->belongsTo(Tea::class);
-    }
-
 
 }

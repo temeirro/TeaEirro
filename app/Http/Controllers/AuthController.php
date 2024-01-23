@@ -74,45 +74,30 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     tags={"Auth"},
      *     path="/api/register",
+     *     summary="Register a new user",
+     *     tags={"Authentication"},
      *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 required={"email", "lastName", "name", "phone", "image", "password", "password_confirmation"},
-     *                 @OA\Property(
-     *                     property="image",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="email",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="lastName",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="name",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="phone",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="password",
-     *                     type="string"
-     *                 ),
-     *                 @OA\Property(
-     *                     property="password_confirmation",
-     *                     type="string"
-     *                 )
-     *             )
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "lastName", "image", "phone", "email", "role", "password"},
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="lastName", type="string"),
+     *             @OA\Property(property="image", type="string"),
+     *             @OA\Property(property="phone", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="role", type="string"),
+     *             @OA\Property(property="password", type="string", format="password", minLength=6),
      *         )
      *     ),
-     *     @OA\Response(response="200", description="Add Category.")
+     *     @OA\Response(
+     *         response="200",
+     *         description="User registered successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", description="Authentication token"),
+     *         )
+     *     ),
+     *     @OA\Response(response="400", description="Bad request, validation error"),
      * )
      */
     public function register(Request $request) {
