@@ -174,7 +174,7 @@ class TeaController extends Controller
     public function getMatchaTea()
     {
         // Get only matcha teas (Tea Type ID = 8)
-        $data = Tea::with('tea_type','tea_origin','tea_images')->where('type_id', 8)->get();
+        $data = Tea::with('tea_type','tea_origin','tea_images')->where('type_id', 7)->get();
 
         // Return the matcha teas as JSON response
         return response()->json($data)
