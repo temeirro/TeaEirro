@@ -13,5 +13,7 @@ class TeaOrigin extends Model
     protected $fillable = [
         "name",
     ];
+    public $timestamps = false;
+
 
 }

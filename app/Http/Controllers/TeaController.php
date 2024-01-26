@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tea;
+use App\Models\TeaImage;
+use App\Models\TeaOrigin;
+use App\Models\TeaType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 class TeaController extends Controller
 {
     /**
@@ -180,4 +184,304 @@ class TeaController extends Controller
         return response()->json($data)
             ->header('Content-Type', 'application/json; charset=utf-8');
     }
+
+    /**
+     * @OA\Get(
+     *     tags={"Tea"},
+     *     path="/api/getAllTeaTypes",
+     *     @OA\Response(response="200", description="All Tea Types List.")
+     * )
+     */
+    public function getAllTeaTypes()
+    {
+        // Retrieve all tea types
+        $data = TeaType::all(); // Assuming you have a model for TeaType
+
+        // Return the tea types as JSON response
+        return response()->json($data)
+            ->header('Content-Type', 'application/json; charset=utf-8');
+    }
+
+    /**
+     * @OA\Get(
+     *     tags={"Tea"},
+     *     path="/api/getAllTeaOrigins",
+     *     @OA\Response(response="200", description="All Tea Origins List.")
+     * )
+     */
+    public function getAllTeaOrigins()
+    {
+        // Retrieve all tea types
+        $data = TeaOrigin::all(); // Assuming you have a model for TeaType
+
+        // Return the tea types as JSON response
+        return response()->json($data)
+            ->header('Content-Type', 'application/json; charset=utf-8');
+    }
+
+    /**
+     * @OA\Post(
+     *     tags={"Tea"},
+     *     path="/api/addTea",
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"name","price","description","type_id","origin_id","ingredients","images[]"},
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="price",
+     *                     type="number"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="type_id",
+     *                     type="integer"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="origin_id",
+     *                     type="integer"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="ingredients",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="images[]",
+     *                     type="array",
+     *                     @OA\Items(type="string", format="binary")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Add Tea.")
+     * )
+     */
+    public function addTea(Request $request)
+    {
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'price' => 'required',
+            'description' => 'required',
+            'type_id' => 'required|exists:tea_types,id',
+            'origin_id' => 'required|exists:tea_origins,id',
+            'ingredients' => 'required|string',
+            'images' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $images = $request->file('images');
+        $tea = Tea::create($input);
+
+        // Create image manager with desired driver
+        $manager = new ImageManager(new Driver());
+
+        if ($request->hasFile('images')) {
+            foreach ($images as $image) {
+                $imageName = uniqid() . '.webp';
+                $imageRead = $manager->read($image);
+                $path = public_path('upload/' . $imageName);
+                $imageRead->toWebp()->save($path);
+
+                TeaImage::create([
+                    'tea_id' => $tea->id,
+                    'name' => $imageName,
+                ]);
+            }
+        }
+
+        $tea->load('tea_images');
+
+        return response()->json($tea, 200, [
+            'Content-Type' => 'application/json;charset=UTF-8',
+            'Charset' => 'utf-8'
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+
+    /**
+     * @OA\Delete(
+     *     tags={"Tea"},
+     *     path="/api/deleteTea/{id}",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the tea to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(response="204", description="Tea and images deleted successfully."),
+     *     @OA\Response(response="404", description="Tea not found."),
+     *     @OA\Response(response="500", description="Error deleting tea.")
+     * )
+     */
+
+    public function deleteTea($id)
+    {
+        $tea = Tea::find($id);
+
+        if (!$tea) {
+            return response()->json(['error' => 'Tea not found.'], 404);
+        }
+
+        try {
+            // Delete associated images from the upload folder
+            foreach ($tea->tea_images as $image) {
+                $imagePath = public_path('upload/' . $image->name);
+                if (!empty($imagePath) && file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
+            // Delete associated images from the database
+            TeaImage::where('tea_id', $tea->id)->delete();
+
+            // Delete tea
+            $tea->delete();
+
+            return response()->json(null, 204);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error deleting tea.'], 500);
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *     tags={"Tea"},
+     *     path="/api/editTea/{id}",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the tea to edit",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"name","price","description","type_id","origin_id","ingredients","images[]"},
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="price",
+     *                     type="number"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="description",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="type_id",
+     *                     type="integer"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="origin_id",
+     *                     type="integer"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="ingredients",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="images[]",
+     *                     type="array",
+     *                     @OA\Items(type="string", format="binary")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Tea edited successfully."),
+     *     @OA\Response(response="404", description="Tea not found."),
+     *     @OA\Response(response="400", description="Validation error."),
+     *     @OA\Response(response="500", description="Error editing tea.")
+     * )
+     */
+    public function editTea(Request $request, $id)
+    {
+        $input = $request->all();
+
+        // Validate the input
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'price' => 'required',
+            'description' => 'required',
+            'type_id' => 'required|exists:tea_types,id',
+            'origin_id' => 'required|exists:tea_origins,id',
+            'ingredients' => 'required|string',
+            'images' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        // Find the tea by ID
+        $tea = Tea::find($id);
+
+        if (!$tea) {
+            return response()->json(['error' => 'Tea not found.'], 404);
+        }
+
+        try {
+            // Update tea details
+            $tea->update($input);
+
+            // Delete existing images
+            foreach ($tea->tea_images as $image) {
+                $imagePath = public_path('upload/' . $image->name);
+                if (!empty($imagePath) && file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
+            // Delete associated images from the database
+            TeaImage::where('tea_id', $tea->id)->delete();
+
+            // Upload new images
+            $images = $request->file('images');
+            $manager = new ImageManager(new Driver());
+
+            foreach ($images as $image) {
+                $imageName = uniqid() . '.webp';
+                $imageRead = $manager->read($image);
+                $path = public_path('upload/' . $imageName);
+                $imageRead->toWebp()->save($path);
+
+                TeaImage::create([
+                    'tea_id' => $tea->id,
+                    'name' => $imageName,
+                ]);
+            }
+
+            // Load tea images
+            $tea->load('tea_images');
+
+            return response()->json($tea, 200, [
+                'Content-Type' => 'application/json;charset=UTF-8',
+                'Charset' => 'utf-8'
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error editing tea.'], 500);
+        }
+    }
+
+
 }

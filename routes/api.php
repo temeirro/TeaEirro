@@ -34,6 +34,14 @@ Route::get('/getOolongTea', [TeaController::class, 'getOolongTea']);
 Route::get('/getWhiteTea', [TeaController::class, 'getWhiteTea']);
 Route::get('/getPuerhTea', [TeaController::class, 'getPuerhTea']);
 Route::get('/getMatchaTea', [TeaController::class, 'getMatchaTea']);
+Route::get('/getAllTeaTypes', [TeaController::class, 'getAllTeaTypes']);
+Route::get('/getAllTeaOrigins', [TeaController::class, 'getAllTeaOrigins']);
+
+Route::post('/addTea', [TeaController::class, 'addTea']);
+Route::delete('/deleteTea/{id}', [TeaController::class, 'deleteTea']);
+Route::post('/editTea/{id}', [TeaController::class, 'editTea']);
+
+
 
 Route::get('/getTea/{id}', [TeaController::class, 'getTeaById']);
 

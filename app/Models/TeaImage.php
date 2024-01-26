@@ -20,5 +20,7 @@ class TeaImage extends Model
         return $this->belongsTo(Tea::class);
     }
 
+    public $timestamps = false;
+
 
 }

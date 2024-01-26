@@ -262,6 +262,198 @@
                     }
                 }
             }
+        },
+        "/api/getAllTeaTypes": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "672764b4a7e6d0058c37fbd3d7636659",
+                "responses": {
+                    "200": {
+                        "description": "All Tea Types List."
+                    }
+                }
+            }
+        },
+        "/api/getAllTeaOrigins": {
+            "get": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "e53628ed525890493a6977a2af9c1d87",
+                "responses": {
+                    "200": {
+                        "description": "All Tea Origins List."
+                    }
+                }
+            }
+        },
+        "/api/addTea": {
+            "post": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "2ba83c379af21cb089a7bab640c01968",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "price",
+                                    "description",
+                                    "type_id",
+                                    "origin_id",
+                                    "ingredients",
+                                    "images[]"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "type": "number"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "type_id": {
+                                        "type": "integer"
+                                    },
+                                    "origin_id": {
+                                        "type": "integer"
+                                    },
+                                    "ingredients": {
+                                        "type": "string"
+                                    },
+                                    "images[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Add Tea."
+                    }
+                }
+            }
+        },
+        "/api/deleteTea/{id}": {
+            "delete": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "3290ed36cb47749e94787d8c203096ac",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the tea to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Tea and images deleted successfully."
+                    },
+                    "404": {
+                        "description": "Tea not found."
+                    },
+                    "500": {
+                        "description": "Error deleting tea."
+                    }
+                }
+            }
+        },
+        "/api/editTea/{id}": {
+            "post": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "ba2d48de4dc36bbfbb1f5ff26eab3637",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the tea to edit",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "price",
+                                    "description",
+                                    "type_id",
+                                    "origin_id",
+                                    "ingredients",
+                                    "images[]"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "type": "number"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "type_id": {
+                                        "type": "integer"
+                                    },
+                                    "origin_id": {
+                                        "type": "integer"
+                                    },
+                                    "ingredients": {
+                                        "type": "string"
+                                    },
+                                    "images[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tea edited successfully."
+                    },
+                    "404": {
+                        "description": "Tea not found."
+                    },
+                    "400": {
+                        "description": "Validation error."
+                    },
+                    "500": {
+                        "description": "Error editing tea."
+                    }
+                }
+            }
         }
     }
 }

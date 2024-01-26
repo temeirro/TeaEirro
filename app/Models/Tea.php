@@ -33,4 +33,7 @@ class Tea extends Model
     {
         return $this->hasMany(TeaImage::class);
     }
+
+    public $timestamps = false;
+
 }
