@@ -22,7 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/login',[AuthController::class, 'login']);
+Route::post('/loginGoogle',[AuthController::class, 'loginGoogle']);
 Route::post('/register',[AuthController::class, 'register']);
+Route::post('/registerGoogle',[AuthController::class, 'registerGoogle']);
 Route::get('/getImage',[AuthController::class, 'getUserImageNameByEmail']);
 
 
@@ -37,9 +39,14 @@ Route::get('/getMatchaTea', [TeaController::class, 'getMatchaTea']);
 Route::get('/getAllTeaTypes', [TeaController::class, 'getAllTeaTypes']);
 Route::get('/getAllTeaOrigins', [TeaController::class, 'getAllTeaOrigins']);
 
+Route::delete('/deleteTeaImage/{teaId}/{imageName}', [TeaController::class, 'deleteTeaImage']);
+Route::post('/addTeaImage/{teaId}', [TeaController::class, 'addTeaImage']);
+
+
 Route::post('/addTea', [TeaController::class, 'addTea']);
 Route::delete('/deleteTea/{id}', [TeaController::class, 'deleteTea']);
 Route::post('/editTea/{id}', [TeaController::class, 'editTea']);
+Route::post('/editTeaWithoutImages/{id}', [TeaController::class, 'editTeaWithoutImages']);
 
 
 

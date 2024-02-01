@@ -454,6 +454,96 @@
                     }
                 }
             }
+        },
+        "/api/deleteTeaImage/{teaId}/{imageName}": {
+            "delete": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "403d44d8b874097511b9d7c36dc44a19",
+                "parameters": [
+                    {
+                        "name": "teaId",
+                        "in": "path",
+                        "description": "ID of the tea",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "imageName",
+                        "in": "path",
+                        "description": "Name of the image to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Tea image deleted successfully."
+                    },
+                    "404": {
+                        "description": "Tea or image not found."
+                    },
+                    "500": {
+                        "description": "Error deleting tea image."
+                    }
+                }
+            }
+        },
+        "/api/addTeaImage/{teaId}": {
+            "post": {
+                "tags": [
+                    "Tea"
+                ],
+                "operationId": "d0ebb65f588406a25d1b9772af8dab4f",
+                "parameters": [
+                    {
+                        "name": "teaId",
+                        "in": "path",
+                        "description": "ID of the tea to add an image to",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "image"
+                                ],
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tea image added successfully."
+                    },
+                    "404": {
+                        "description": "Tea not found."
+                    },
+                    "400": {
+                        "description": "Validation error."
+                    },
+                    "500": {
+                        "description": "Error adding tea image."
+                    }
+                }
+            }
         }
     }
 }

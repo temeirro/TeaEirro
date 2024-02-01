@@ -12,6 +12,8 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "laravel/vapor-cli": "^1.63",
+        "laravel/vapor-core": "^2.36",
         "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
@@ -56,6 +58,7 @@
         }
     },
     "config": {
+        "COMPOSER_MIRROR_PATH_REPOS": true,
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
